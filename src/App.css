@@ -1,0 +1,10 @@
+.order {
+    padding: 5px 10px;
+    border: 2px solid rgb(231, 188, 95);
+    max-width: fit-content;
+    cursor: pointer;
+}
+
+.order:hover {
+    background-color: rgb(153, 222, 199);
+}
