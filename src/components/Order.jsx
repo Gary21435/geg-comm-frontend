@@ -10,7 +10,6 @@ const Order = (props) => {
     const expand = (id) => {
         const table = document.querySelector(`#${"order"+id}.table-div`);
         table.classList.toggle('expand');
-        console.log("is it running?", id);
     }
 
     // to copy text (address, phone, etc.)
