@@ -25,7 +25,7 @@ const Login = ({ setToken }) => {
             .then(response => {
                 console.log("Hello,", response.data.name);
                 setToken(response.data.token);
-                navigate('/dashboard'); // don't need this because not using createBrowserRouter anymore
+                navigate('/dashboard/orders'); // don't need this because not using createBrowserRouter anymore
             })
             .catch(error => console.log(error.message))
         

@@ -22,3 +22,13 @@ h1 {
     display: flex;
 }
 
+.whole-app {
+    display: flex;
+
+}
+
+.menu {
+    width: 120px;
+    height: 100vh;
+    background-color: azure;
+}

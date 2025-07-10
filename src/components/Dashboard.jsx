@@ -24,16 +24,13 @@ const Dashboard = ({ token }) => {
   
   return (
     <>
-      <Menu />
       <div className='app-logo'>
-        <a href=""><img src="./imgs/geg_logo.png" alt="logo" id="logo" /></a>
+        <a href=""><img src="../../imgs/geg_logo.png" alt="logo" id="logo" /></a>
         <h1>GEG Comm</h1>
       </div>
       {orders.map(order => {
         return <Order key={order.order_id} {...order} />
       })}
-      <br />
-      <Link to="login">login</Link>
     </>
   )
 }

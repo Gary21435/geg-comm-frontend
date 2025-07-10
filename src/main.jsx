@@ -3,6 +3,7 @@ import { createRoot } from 'react-dom/client'
 import { BrowserRouter, Routes, Route, Navigate, createBrowserRouter, RouterProvider } from 'react-router-dom'
 import Dashboard from './components/Dashboard.jsx'
 import Login from './components/Login.jsx'
+import App from './App.jsx'
 import './main.css'
 
 // const router = createBrowserRouter([
@@ -16,6 +17,11 @@ import './main.css'
 //   }
 // ])
 
+// {!token ?
+//         <Login setToken={setToken} /> :
+//         <App token={token} />
+//       }
+
 const Main = () => {
   const [token, setToken] = useState(null);
   if(token)
@@ -25,9 +31,12 @@ const Main = () => {
     <Routes>
       <Route path="/" element={<Login setToken={setToken} />} />
       <Route 
-        path="/dashboard"
-        element={token ? <Dashboard token={token} /> : <Navigate to="/" replace />}
-      />
+        path="/dashboard/*"
+        element={token ? <App token={token} /> : <Navigate to="/" replace />}
+      >
+        <Route path="orders" element={<Dashboard token={token} />} />
+        {/* <Route path="scheduling" element={<Scheduling />} /> */}
+      </Route>
     </Routes>
   );
 }
