@@ -1,14 +1,14 @@
 import { StrictMode, useState } from 'react'
 import { createRoot } from 'react-dom/client'
-import { BrowserRouter, createBrowserRouter, RouterProvider } from 'react-router-dom'
-import App from './App.jsx'
+import { BrowserRouter, Routes, Route, Navigate, createBrowserRouter, RouterProvider } from 'react-router-dom'
+import Dashboard from './components/Dashboard.jsx'
 import Login from './components/Login.jsx'
 import './main.css'
 
 // const router = createBrowserRouter([
 //   {
 //     path: 'dashboard',
-//     element: <App />
+//     element: <Dashboard />
 //   },
 //   {
 //     path: '/',
@@ -18,14 +18,18 @@ import './main.css'
 
 const Main = () => {
   const [token, setToken] = useState(null);
+  if(token)
+    console.log("token!");
+  else console.log("nO!");
   return (
-    <>
-      {!token ?
-        <Login setToken={setToken} /> :
-        <App token={token} />
-      }
-    </>
-  )
+    <Routes>
+      <Route path="/" element={<Login setToken={setToken} />} />
+      <Route 
+        path="/dashboard"
+        element={token ? <Dashboard token={token} /> : <Navigate to="/" replace />}
+      />
+    </Routes>
+  );
 }
 
 

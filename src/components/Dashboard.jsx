@@ -1,9 +1,10 @@
 import { useState, useEffect } from 'react'
-import Order from './components/Order'
-import orderService from './services/orders'
+import Order from './Order'
+import Menu from './Menu'
+import orderService from '../services/orders'
 import { Link } from 'react-router-dom'
 
-const App = ({ token }) => {
+const Dashboard = ({ token }) => {
   const [orders, setOrders] = useState([]);
   // You'd use useEffect to load Order data from the DB at initial App mount
   if (!token) return (
@@ -23,7 +24,11 @@ const App = ({ token }) => {
   
   return (
     <>
-      <h1>GEG Comm</h1>
+      <Menu />
+      <div className='app-logo'>
+        <a href=""><img src="./imgs/geg_logo.png" alt="logo" id="logo" /></a>
+        <h1>GEG Comm</h1>
+      </div>
       {orders.map(order => {
         return <Order key={order.order_id} {...order} />
       })}
@@ -33,4 +38,4 @@ const App = ({ token }) => {
   )
 }
 
-export default App
+export default Dashboard

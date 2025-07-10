@@ -1,12 +1,13 @@
 import { Link } from 'react-router-dom'
 import { useState } from 'react';
 import loginService from '../services/login'
+import { useNavigate } from 'react-router-dom';
 
 const Login = ({ setToken }) => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [showPassword, setShowPassword] = useState(false);
-    //const navigate = useNavigate();
+    const navigate = useNavigate();
 
     const submitHandler = (event) => {
         event.preventDefault();
@@ -24,7 +25,7 @@ const Login = ({ setToken }) => {
             .then(response => {
                 console.log("Hello,", response.data.name);
                 setToken(response.data.token);
-                //navigate('/dashboard'); // don't need this because not using createBrowserRouter anymore
+                navigate('/dashboard'); // don't need this because not using createBrowserRouter anymore
             })
             .catch(error => console.log(error.message))
         
