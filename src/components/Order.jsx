@@ -1,12 +1,7 @@
 import './Order.css'
 
-const name = 'Esmeralda Reyes'
-const order_info_items = ['Name', 'Phone', 'Address', 'Status']
-const order_info = [name, '818-221-2222', '17320 Burbank Blvd', 'New']
 
-
-const Order = (props) => {
-
+const Order = ({ order_info, orders, setOrders }) => {
     const expand = (id) => {
         const table = document.querySelector(`#${"order"+id}.table-div`);
         table.classList.toggle('expand');
@@ -17,27 +12,37 @@ const Order = (props) => {
     //     navigator.clipboard.writeText(text);
     // }
 
-    Object.keys(props).forEach((thing, i) => {
-        console.log(`${thing}: `, props[thing]);
+    const handleClick = (id) => {
+        console.log("handleClick!");
+        const orderIndex = orders.findIndex(order => order.order_id === id);
+        if (orderIndex !== -1) {
+            setOrders(prevOrders => 
+                prevOrders.map((order, idx) => 
+                    idx === orderIndex
+                        ? { ...order, schedule: !order.schedule }
+                        : order
+                )
+            );
+        }
     }
-    )
 
     return (
         <>
             <div className='order-container'>
-                <div className="order" onClick={() => expand(props.order_id)}>#{props.order_id} {props.first_name} {props.last_name} <span className='order-status'>{props.custom_status}</span></div>
+                <div className="order" onClick={() => expand(order_info.order_id)}>#{order_info.order_id} {order_info.first_name} {order_info.last_name} <span className='order-status'>{order_info.custom_status}</span></div>
                 <div className='wrapper'>
-                    <div className='table-div' id={String("order"+props.order_id)}>
+                    <div className='table-div' id={String("order"+order_info.order_id)}>
                         <table className='info-table'>
                             <tbody>
-                                {Object.keys(props).map((thing, i) => 
+                                {Object.keys(order_info).map((thing, i) => 
                                     <tr key={i}>
                                         <td>{thing}: </td>
-                                        <td>{props[thing]}</td>
+                                        <td>{order_info[thing]}</td>
                                     </tr>
                                 )}
                             </tbody>
                         </table>
+                        <button onClick={() => handleClick(order_info.order_id)}>schedule</button>
                     </div>
                 </div>
             </div>

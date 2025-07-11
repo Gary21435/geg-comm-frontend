@@ -37,14 +37,14 @@
 }
 
 .table-div {
-    margin-top: -100%;
-    transition: all .3s;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.25s ease;
     background-color: rgb(249, 247, 237);  
 }
 
 .table-div.expand {
-    margin-top: 0;
-    transition: all .1s;
+    max-height: 500px;
 }
 
 td {

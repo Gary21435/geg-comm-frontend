@@ -24,9 +24,7 @@ import './main.css'
 
 const Main = () => {
   const [token, setToken] = useState(null);
-  if(token)
-    console.log("token!");
-  else console.log("nO!");
+
   return (
     <Routes>
       <Route path="/" element={<Login setToken={setToken} />} />
