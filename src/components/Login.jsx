@@ -3,7 +3,7 @@ import { useState } from 'react';
 import loginService from '../services/login'
 import { useNavigate } from 'react-router-dom';
 
-const Login = ({ setToken }) => {
+const Login = () => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [showPassword, setShowPassword] = useState(false);
@@ -22,12 +22,13 @@ const Login = ({ setToken }) => {
 
         loginService
             .login(loginInfo)
-            .then(response => {
-                console.log("Hello,", response.data.name);
-                setToken(response.data.token);
-                navigate('/dashboard/orders'); // don't need this because not using createBrowserRouter anymore
+            .then(() => {
+                // console.log("Hello,", response.data.name);
+                // setToken(response.data.token);
+                // setToken(true);
+                navigate('/dashboard/orders'); // don't need this if not using createBrowserRouter
             })
-            .catch(error => console.log(error.message))
+            .catch(error => console.log("login failed", error.message))
         
     }
 
@@ -72,7 +73,6 @@ const Login = ({ setToken }) => {
                 </div>
                 <button type="submit">Login</button>
             </form>
-            <Link to="/">back</Link>
         </>
     )
 }

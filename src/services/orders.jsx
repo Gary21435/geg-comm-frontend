@@ -1,11 +1,11 @@
 import axios from 'axios'
 const baseUrl = '/api/orders'
 
-const getAll = (token) => {
+axios.defaults.withCredentials = true;
+
+const getAll = () => {
     return axios.get(baseUrl, {
-        headers: {
-            Authorization: `Bearer ${token}`
-        }
+        withCredentials: true
     })
 }
 

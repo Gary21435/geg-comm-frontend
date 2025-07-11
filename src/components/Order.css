@@ -1,7 +1,7 @@
 
 
 .order-container {
-    max-width: max-content;
+    width: 30vw;
     border: 3px solid rgb(231, 188, 95);
     
     margin: 5px;
@@ -49,5 +49,6 @@
 
 td {
     padding-right: 10px;
+    overflow: hidden;
 }
 

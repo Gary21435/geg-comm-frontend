@@ -2,12 +2,13 @@ import { useState, useEffect } from 'react'
 import Order from './Order'
 import Menu from './Menu'
 import orderService from '../services/orders'
+import loginService from '../services/login'
 import { Link } from 'react-router-dom'
 
-const Dashboard = ({ token }) => {
+const Dashboard = () => {
   const [orders, setOrders] = useState([]);
   const [schOrders, setSchOrders] = useState([]);
-  const [schIds, setSchIds] = useState([]);
+  const [token, setToken] = useState(false);
 
   const schedule_orders = orders.filter(order => order.schedule);
 
@@ -22,29 +23,76 @@ const Dashboard = ({ token }) => {
   console.log("orders", orders);
 
   // You'd use useEffect to load Order data from the DB at initial App mount
-  if (!token) return (
-    <>
-      <h1>noting</h1>
-    </>
-  )
+  // if (!token) return (
+  //   <>
+  //     <h1>noting</h1>
+  //   </>
+  // )
   useEffect(() => {
     orderService
-      .getAll(token)
+      .getAll()
       .then(response => {
+        console.log("getall worked first time");
         const orders = response.data;
         orders.map(order => {
           return {...order, schedule: false};
         } )
+        setToken(true);
         setOrders(orders);
       })
-      .catch(response => console.error(response.message))
+      .catch(async error => {
+        console.error("token must be expired", error.message);
+        // setToken(true);
+        if (error.response.status === 401) {
+          console.log("access token probably expired; calling refresh!");
+
+          loginService
+            .refresh()
+            .then(() => {
+              console.log("refresh worked! Let us now get the orders!");
+              orderService
+                .getAll()
+                .then(response => {
+                  const orders = response.data;
+                  orders.map(order => {
+                    return {...order, schedule: false};
+                  } )
+                  setToken(true);
+                  setOrders(orders);
+                })
+                .catch(e => console.log("error after refresh???", e))
+            })
+            .catch(e => {
+              console.log('idek', e);
+              console.log("refresh did not work");
+            })
+        }
+      })
     }, [])
+
+  const handleLogout = () => {
+    loginService
+      .logout()
+      .then(r => {
+        console.log("logged out!", r);
+      })
+      .catch(e => console.error(e.message))
+  }
   
+  if(!token)
+    return (
+      <>
+        <h1>You don't have access</h1>
+        <Link to="/">Login</Link>
+      </>
+    )
+
   return (
     <>
       <div className='app-logo'>
         <a href=""><img src="../../imgs/geg_logo.png" alt="logo" id="logo" /></a>
         <h1>GEG Comm</h1>
+        <button onClick={handleLogout}>Logout</button>
       </div>
       <h2>Scheduling</h2>
       {schedule_orders.length ? schedule_orders.map(order => {

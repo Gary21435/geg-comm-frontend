@@ -4,6 +4,7 @@ import { BrowserRouter, Routes, Route, Navigate, createBrowserRouter, RouterProv
 import Dashboard from './components/Dashboard.jsx'
 import Login from './components/Login.jsx'
 import App from './App.jsx'
+import RequireAuth from './components/RequireAuth.jsx'
 import './main.css'
 
 // const router = createBrowserRouter([
@@ -23,16 +24,23 @@ import './main.css'
 //       }
 
 const Main = () => {
-  const [token, setToken] = useState(null);
+  // const [token, setToken] = useState(null);
 
   return (
     <Routes>
-      <Route path="/" element={<Login setToken={setToken} />} />
+      <Route path="/" element={<Login />} />
+      {/* <Route path="/" element={<Login setToken={setToken} />} /> */}
       <Route 
         path="/dashboard/*"
-        element={token ? <App token={token} /> : <Navigate to="/" replace />}
+        element={
+          <RequireAuth>
+            <App />
+          </RequireAuth>
+        }
+        // element={token ? <App token={token} /> : <Navigate to="/" replace />}
       >
-        <Route path="orders" element={<Dashboard token={token} />} />
+        <Route path="orders" element={<Dashboard />} />
+        {/* <Route path="orders" element={<Dashboard token={token} />} /> */}
         {/* <Route path="scheduling" element={<Scheduling />} /> */}
       </Route>
     </Routes>
