@@ -5,6 +5,7 @@ import Dashboard from './components/Dashboard.jsx'
 import Login from './components/Login.jsx'
 import App from './App.jsx'
 import RequireAuth from './components/RequireAuth.jsx'
+import PrivacyPolicy from './components/PrivacyPolicy.jsx'
 import './main.css'
 
 // const router = createBrowserRouter([
@@ -29,13 +30,16 @@ const Main = () => {
   return (
     <Routes>
       <Route path="/" element={<Login />} />
+      <Route path="/privacy+policy" element={
+        <RequireAuth>
+          <PrivacyPolicy />
+        </RequireAuth>
+        } />
       {/* <Route path="/" element={<Login setToken={setToken} />} /> */}
       <Route 
         path="/dashboard/*"
         element={
-          <RequireAuth>
             <App />
-          </RequireAuth>
         }
         // element={token ? <App token={token} /> : <Navigate to="/" replace />}
       >

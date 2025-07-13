@@ -4,12 +4,14 @@ import Menu from './Menu'
 import orderService from '../services/orders'
 import loginService from '../services/login'
 import { Link } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom';
+
 
 const Dashboard = () => {
   const [orders, setOrders] = useState([]);
   const [schOrders, setSchOrders] = useState([]);
   const [token, setToken] = useState(false);
-
+  const navigate = useNavigate();
   const schedule_orders = orders.filter(order => order.schedule);
 
   // console.log("schorders:", schOrders);
@@ -64,7 +66,8 @@ const Dashboard = () => {
             })
             .catch(e => {
               console.log('idek', e);
-              console.log("refresh did not work");
+              console.log("refreshToken has also expired or logged out");
+              navigate('/');
             })
         }
       })
@@ -77,15 +80,18 @@ const Dashboard = () => {
         console.log("logged out!", r);
       })
       .catch(e => console.error(e.message))
+    
+    navigate('/');
   }
   
-  if(!token)
-    return (
-      <>
-        <h1>You don't have access</h1>
-        <Link to="/">Login</Link>
-      </>
-    )
+  // useEffect(() => {
+  //   setTimeout(() => {
+  //     if(!token)
+  //       navigate('/');
+  //   }, 100);
+    
+  // }, [])
+  
 
   return (
     <>
@@ -94,6 +100,7 @@ const Dashboard = () => {
         <h1>GEG Comm</h1>
         <button onClick={handleLogout}>Logout</button>
       </div>
+      <Link to="/privacy+policy">Privacy Policy</Link>
       <h2>Scheduling</h2>
       {schedule_orders.length ? schedule_orders.map(order => {
         return <Order key={order.order_id+1000} orders={orders} setOrders={setOrders} set order_info={order} />

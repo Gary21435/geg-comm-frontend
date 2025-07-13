@@ -14,6 +14,7 @@ const RequireAuth = ({ children }) => {
         setAuthenticated(true);
       })
       .catch(() => {
+        // ***Add loginService Refresh here, then setAuthenticated(true) in .then()***
         setAuthenticated(false);
       })
       .finally(() => setChecking(false));
@@ -21,7 +22,7 @@ const RequireAuth = ({ children }) => {
 
   if (checking) return <p>Loading...</p>;
 
-  return children;//authenticated ? children : <Navigate to="/" replace />;
+  return authenticated ? children : <Navigate to="/" replace />;
 };
 
 export default RequireAuth;
