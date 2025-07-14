@@ -18,6 +18,12 @@ const updateOrder = (id, scheduleData) => {
     })
 }
 
+const setSchFalse = (id) => {
+    return axios.patch(`${baseUrl}/schedule/${id}/false`, {
+        withCredentials: true
+    })
+}
+
 const getFolast = (id) => {
     return axios.get(`${baseUrl}/vch/${id}`, {
         headers: {
@@ -27,4 +33,4 @@ const getFolast = (id) => {
     })
 }
 
-export default { getAll, updateOrder, getFolast }
+export default { getAll, updateOrder, setSchFalse, getFolast }

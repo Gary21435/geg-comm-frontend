@@ -13,7 +13,6 @@ const Dashboard = () => {
   const [token, setToken] = useState(false);
   const navigate = useNavigate();
   const schedule_orders = orders.filter(order => order.schedule);
-  console.log("schedule_orders", schedule_orders);
   const [schChange, setSchChange] = useState(false);
 
   // console.log("schorders:", schOrders);
@@ -24,9 +23,7 @@ const Dashboard = () => {
   // schIds.forEach(id => {
   //   setOrders(orders.filter(order => order.order_id !== id))
   // });
-  orders.forEach(order => {
-    console.log(order.schedule);
-  })
+
 
   // You'd use useEffect to load Order data from the DB at initial App mount
   // if (!token) return (
@@ -38,7 +35,6 @@ const Dashboard = () => {
     orderService
       .getAll()
       .then(response => {
-        console.log("getall worked first time");
         const orders = response.data;
         orders.map(order => {
           return {...order, schedule: false};
@@ -47,7 +43,6 @@ const Dashboard = () => {
         setOrders(orders);
       })
       .catch(async error => {
-        console.error("token must be expired", error.message);
         // setToken(true);
         if (error.response.status === 401) {
           console.log("access token probably expired; calling refresh!");
@@ -69,7 +64,6 @@ const Dashboard = () => {
                 .catch(e => console.log("error after refresh???", e))
             })
             .catch(e => {
-              console.log('idek', e);
               console.log("refreshToken has also expired or logged out");
               navigate('/');
             })

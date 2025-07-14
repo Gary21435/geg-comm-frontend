@@ -36,8 +36,9 @@ const formatDateLong = (dateStr) => {
   });
 };
 
-const DeliveryScheduler = ({ id, setSchedule, delivery, setOrders }) => {
+const DeliveryScheduler = ({ id, delivery, setOrders, schedule }) => {
   const [scheduled, setScheduled] = useState(delivery);
+  const [dateSet, setDateSet] = useState(schedule)
   let deliv = {
     date: null,
     time_from: null,
@@ -56,6 +57,16 @@ const DeliveryScheduler = ({ id, setSchedule, delivery, setOrders }) => {
 
   const timeOptions = generateTimeOptions();
 
+  const changeSch = (bool) => {
+      setOrders(prevOrders =>
+        prevOrders.map(order =>
+          order.id === id
+            ? { ...order, schedule: bool }
+            : order
+        )
+      );
+    }
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
@@ -72,8 +83,6 @@ const DeliveryScheduler = ({ id, setSchedule, delivery, setOrders }) => {
       alert('Please fill out all fields.');
       return;
     }
-    console.log("time_from:", time_from);
-    console.log("to - from:", time_to-time_from);
     if (time_from >= time_to) {
       alert('Start time must be before end time.');
       return;
@@ -84,16 +93,9 @@ const DeliveryScheduler = ({ id, setSchedule, delivery, setOrders }) => {
       time_from: formatTime12hr(time_from),
       time_to: formatTime12hr(time_to),
     });
-    setOrders(prevOrders =>
-      prevOrders.map(order =>
-        order.id === id
-          ? { ...order, schedule: true }
-          : order
-      )
-    );
-    console.log("IS THIS GETTING CALLED?");
-    setSchedule(true); // for UI to update immediately
-
+    // to update ui
+    changeSch(true);
+    setDateSet(true);
 
     orderService
       .updateOrder(id, {
@@ -107,14 +109,26 @@ const DeliveryScheduler = ({ id, setSchedule, delivery, setOrders }) => {
       .catch(e => console.log("error:", e))
   };
 
+  const handleRemove = () => {
+    setDateSet(false);
+    changeSch(false);
 
-  if (scheduled) {
+    orderService
+      .setSchFalse(id)
+      .then(r => {
+        console.log("schedule set to false", r);
+      })
+      .catch(e => console.log("error schedule set to false:", e))
+  }
+
+  if (dateSet) {
     return (
       <div>
         <h3>Delivery Scheduled</h3>
         <p>Date: <strong>{scheduled.date}</strong></p>
         <p>Time: <strong>{scheduled.time_from}</strong> to <strong>{scheduled.time_to}</strong></p>
-        <button onClick={() => {setScheduled(null)}}>Edit Delivery time/date</button>
+        <button onClick={() => {setScheduled(null); setDateSet(false);}}>Edit Delivery time/date</button>
+        <button onClick={handleRemove}>Remove from Scheduling</button>
       </div>
     );
   }
@@ -221,7 +235,6 @@ const DeliveryScheduler = ({ id, setSchedule, delivery, setOrders }) => {
 const Order = ({ order_info, orders, setOrders }) => {
     const [folastExpired, setFolastExpired] = useState(false);
     const [folast, setFolast] = useState(null);
-    const [schedule, setSchedule] = useState(order_info.schedule);
     const date = new Date(); // Get the current date and time
 
     const expand = (id) => {
@@ -235,13 +248,11 @@ const Order = ({ order_info, orders, setOrders }) => {
     // }
     
     const getFolast = (e) => {
-      console.log("eeeeee", e.target);
       orderService
         .getFolast(order_info.order_id)
         .then(folast => {
           setFolastExpired(true);
           const td = e.target.parentNode;
-          console.log("td and fo_last", td, folast);
           setFolast(folast.data.folast);
           setTimeout(() => {
              setFolastExpired(false);
@@ -291,7 +302,7 @@ const Order = ({ order_info, orders, setOrders }) => {
                             </tbody>
                         </table>
                         <div className='schedule-form-container'>
-                            <DeliveryScheduler id={order_info.id} setSchedule={setSchedule} delivery={order_info.delivery} setOrders={setOrders} />
+                            <DeliveryScheduler id={order_info.id} delivery={order_info.delivery} setOrders={setOrders} schedule={order_info.schedule} />
                             {/* <button onClick={(e) => handleScheduleForm(e, order_info.order_id)}>schedule</button> */}
                         </div>
                     </div>
