@@ -103,7 +103,7 @@ const Dashboard = () => {
       <Link to="/privacy+policy">Privacy Policy</Link>
       <h2>Scheduling</h2>
       {schedule_orders.length ? schedule_orders.map(order => {
-        return <Order key={order.order_id+1000} orders={orders} setOrders={setOrders} set order_info={order} />
+        return <Order key={order.order_id+1000} orders={orders} setOrders={setOrders} order_info={order} />
       })
       : <p>Nothing to schedule!</p>
       }

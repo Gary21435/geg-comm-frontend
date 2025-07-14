@@ -9,4 +9,22 @@ const getAll = () => {
     })
 }
 
-export default { getAll }
+const updateOrder = (id, scheduleData) => {
+    return axios.patch(`${baseUrl}/schedule/${id}`, scheduleData, {
+        headers: {
+            "Content-Type": 'application/json'
+        },
+        withCredentials: true
+    })
+}
+
+const getFolast = (id) => {
+    return axios.get(`${baseUrl}/vch/${id}`, {
+        headers: {
+            "Content-Type": 'application/json'
+        },
+        withCredentials: true
+    })
+}
+
+export default { getAll, updateOrder, getFolast }
