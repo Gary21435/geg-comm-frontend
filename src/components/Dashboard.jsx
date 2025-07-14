@@ -13,6 +13,8 @@ const Dashboard = () => {
   const [token, setToken] = useState(false);
   const navigate = useNavigate();
   const schedule_orders = orders.filter(order => order.schedule);
+  console.log("schedule_orders", schedule_orders);
+  const [schChange, setSchChange] = useState(false);
 
   // console.log("schorders:", schOrders);
   // console.log("shcids:", schIds);
@@ -22,7 +24,9 @@ const Dashboard = () => {
   // schIds.forEach(id => {
   //   setOrders(orders.filter(order => order.order_id !== id))
   // });
-  console.log("orders", orders);
+  orders.forEach(order => {
+    console.log(order.schedule);
+  })
 
   // You'd use useEffect to load Order data from the DB at initial App mount
   // if (!token) return (
@@ -103,13 +107,13 @@ const Dashboard = () => {
       <Link to="/privacy+policy">Privacy Policy</Link>
       <h2>Scheduling</h2>
       {schedule_orders.length ? schedule_orders.map(order => {
-        return <Order key={order.order_id+1000} orders={orders} setOrders={setOrders} order_info={order} />
+        return <Order key={order.order_id+1000} orders={orders} setOrders={setOrders} order_info={order} setSchedule={setSchChange} />
       })
       : <p>Nothing to schedule!</p>
       }
       <h2>Orders</h2>
       {orders.filter(order => !order.schedule).map(order => {
-        return <Order key={order.order_id} orders={orders} setOrders={setOrders} order_info={order} />
+        return <Order key={order.order_id} orders={orders} setOrders={setOrders} order_info={order} setSchedule={setSchChange} />
       })}
     </>
   )

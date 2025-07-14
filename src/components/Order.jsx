@@ -36,7 +36,7 @@ const formatDateLong = (dateStr) => {
   });
 };
 
-const DeliveryScheduler = ({ id, delivery }) => {
+const DeliveryScheduler = ({ id, setSchedule, delivery, setOrders }) => {
   const [scheduled, setScheduled] = useState(delivery);
   let deliv = {
     date: null,
@@ -84,6 +84,16 @@ const DeliveryScheduler = ({ id, delivery }) => {
       time_from: formatTime12hr(time_from),
       time_to: formatTime12hr(time_to),
     });
+    setOrders(prevOrders =>
+      prevOrders.map(order =>
+        order.id === id
+          ? { ...order, schedule: true }
+          : order
+      )
+    );
+    console.log("IS THIS GETTING CALLED?");
+    setSchedule(true); // for UI to update immediately
+
 
     orderService
       .updateOrder(id, {
@@ -211,6 +221,7 @@ const DeliveryScheduler = ({ id, delivery }) => {
 const Order = ({ order_info, orders, setOrders }) => {
     const [folastExpired, setFolastExpired] = useState(false);
     const [folast, setFolast] = useState(null);
+    const [schedule, setSchedule] = useState(order_info.schedule);
     const date = new Date(); // Get the current date and time
 
     const expand = (id) => {
@@ -222,7 +233,7 @@ const Order = ({ order_info, orders, setOrders }) => {
     // const copyToClipboard = (text) => {
     //     navigator.clipboard.writeText(text);
     // }
-
+    
     const getFolast = (e) => {
       console.log("eeeeee", e.target);
       orderService
@@ -280,7 +291,7 @@ const Order = ({ order_info, orders, setOrders }) => {
                             </tbody>
                         </table>
                         <div className='schedule-form-container'>
-                            <DeliveryScheduler id={order_info.id} delivery={order_info.delivery} />
+                            <DeliveryScheduler id={order_info.id} setSchedule={setSchedule} delivery={order_info.delivery} setOrders={setOrders} />
                             {/* <button onClick={(e) => handleScheduleForm(e, order_info.order_id)}>schedule</button> */}
                         </div>
                     </div>
