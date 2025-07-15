@@ -94,21 +94,25 @@ const Dashboard = () => {
   return (
     <>
       <div className='app-logo'>
-        <a href=""><img src="../../imgs/geg_logo.png" alt="logo" id="logo" /></a>
+        <a href=""><img src="../../imgs/geg_logo_comm.png" alt="logo" id="logo" /></a>
         <h1>GEG Comm</h1>
         <button onClick={handleLogout}>Logout</button>
       </div>
-      <Link to="/privacy+policy">Privacy Policy</Link>
       <h2>Scheduling</h2>
-      {schedule_orders.length ? schedule_orders.map(order => {
-        return <Order key={order.order_id+1000} orders={orders} setOrders={setOrders} order_info={order} setSchedule={setSchChange} />
-      })
-      : <p>Nothing to schedule!</p>
-      }
+      <div className='scheduling-container'>
+        {schedule_orders.length ? schedule_orders.map(order => {
+          return <Order key={order.order_id+1000} orders={orders} setOrders={setOrders} order_info={order} setSchedule={setSchChange} />
+        })
+        : <p>Nothing to schedule!</p>
+        }
+      </div>
       <h2>Orders</h2>
-      {orders.filter(order => !order.schedule).map(order => {
-        return <Order key={order.order_id} orders={orders} setOrders={setOrders} order_info={order} setSchedule={setSchChange} />
-      })}
+      <div className='orders-container'>
+        {orders.filter(order => !order.schedule).map(order => {
+          return <Order key={order.order_id} orders={orders} setOrders={setOrders} order_info={order} setSchedule={setSchChange} />
+        })}
+      </div>
+      <Link to="/privacy+policy">Privacy Policy</Link>
     </>
   )
 }

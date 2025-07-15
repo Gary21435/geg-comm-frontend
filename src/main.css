@@ -16,14 +16,24 @@ body::-webkit-scrollbar {
 #root {
     width: 100%;
     height: 100%;
+
+    display: flex;
+    justify-content: center;
 }
 
-h1 {
+h1, h2 {
     margin: 10px;
+    color: rgb(36, 65, 68);
 }
 
 h2 {
-    color: rgb(124, 86, 36);
+    
+    margin-top: 10px;
+    align-self: flex-start;
+}
+
+p {
+    color: rgb(36, 65, 68);
 }
 
 #logo {
@@ -33,11 +43,48 @@ h2 {
 
 .app-logo {
     display: flex;
+    align-items: center;
 }
 
 .whole-app {
     display: flex;
+    flex-direction: column;
     justify-content: center;
+    align-items: center;
+
+    max-width: fit-content;
+    margin-bottom: 20px;
+}
+
+form, .scheduled-info {
+    background-color: rgb(255, 217, 167);
+    padding: 5px;
+    border-radius: 5px;
+    margin: 0px 2px;
+}
+
+.schedule-form-container>form, .scheduled-info {
+    background-color: rgb(242, 210, 168);
+    margin-bottom: 2px;
+}
+
+.scheduling-container {
+    margin-top: 5px;
+    width: 96%;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+}
+
+.orders-container {
+    margin: 5px 0px;
+    
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
 }
 
 .menu {
@@ -45,3 +92,18 @@ h2 {
     height: 100vh;
     background-color: azure;
 }
+
+button {
+    border: 2px solid transparent;
+    padding: 2px 5px;
+    background-color: rgb(226, 185, 96);
+    color: rgb(36, 65, 68);
+    border-radius: 5px;
+    
+    cursor: pointer;
+}
+
+button:active {
+    border: 2px solid rgb(36, 65, 68);
+}
+

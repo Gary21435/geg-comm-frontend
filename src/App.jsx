@@ -7,9 +7,7 @@ const App = () => {
 
     return (
         <div className="whole-app">
-            <main>
-                <Outlet />
-            </main>
+            <Outlet />
         </div>
     )
 }

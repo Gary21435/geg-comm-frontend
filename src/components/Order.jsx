@@ -36,6 +36,60 @@ const formatDateLong = (dateStr) => {
   });
 };
 
+const AssemblyForm = ({ values = {}, onChange }) => {
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    if (onChange) {
+      onChange({ ...values, [name]: value === 'yes' });
+    }
+  };
+
+  return (
+    <form onSubmit={(e) => {e.preventDefault()}}>
+      <div>
+        <label>
+          Assembly:
+          <select
+            name="assembly"
+            value={values.assembly ? 'yes' : 'no'}
+            onChange={handleChange}
+          >
+            <option value="yes">Yes</option>
+            <option value="no">No</option>
+          </select>
+        </label>
+      </div>
+      <div>
+        <label>
+          Elevator:
+          <select
+            name="elevator"
+            value={values.elevator ? 'yes' : 'no'}
+            onChange={handleChange}
+          >
+            <option value="yes">Yes</option>
+            <option value="no">No</option>
+          </select>
+        </label>
+      </div>
+      <div>
+        <label>
+          Stairs:
+          <div>
+            <input type="checkbox" id="Yes" name="Yes" />
+            <label htmlFor="Yes">Yes</label>
+          </div>
+          <div>
+            <input type="checkbox" id="scales" name="scales" />
+            <label htmlFor="scales">No</label>
+          </div>
+        </label>
+      </div>
+      <button type="submit">Confirm Info</button>
+    </form>
+  );
+};
+
 const DeliveryScheduler = ({ id, delivery, setOrders, schedule }) => {
   const [scheduled, setScheduled] = useState(delivery);
   const [dateSet, setDateSet] = useState(schedule)
@@ -123,7 +177,7 @@ const DeliveryScheduler = ({ id, delivery, setOrders, schedule }) => {
 
   if (dateSet) {
     return (
-      <div>
+      <div className='scheduled-info'>
         <h3>Delivery Scheduled</h3>
         <p>Date: <strong>{scheduled.date}</strong></p>
         <p>Time: <strong>{scheduled.time_from}</strong> to <strong>{scheduled.time_to}</strong></p>
@@ -266,7 +320,7 @@ const Order = ({ order_info, orders, setOrders }) => {
     return (
         <>
             <div className='order-container'>
-                <div className="order" onClick={() => expand(order_info.order_id)}>#{order_info.order_id} {order_info.first_name} {order_info.last_name} <span className='order-status'>{order_info.custom_status}</span></div>
+                <div className="order" onClick={() => expand(order_info.order_id)}><span>#{order_info.order_id}</span> <span>{order_info.first_name} {order_info.last_name}</span> <span className='order-status'>{order_info.custom_status}</span></div>
                 <div className='wrapper'>
                     <div className='table-div' id={String("order"+order_info.order_id)}>
                         <table className='info-table'>
@@ -301,6 +355,9 @@ const Order = ({ order_info, orders, setOrders }) => {
                                 )} */}
                             </tbody>
                         </table>
+                        <div className='assembly-form-container'>
+                            <AssemblyForm />
+                        </div>
                         <div className='schedule-form-container'>
                             <DeliveryScheduler id={order_info.id} delivery={order_info.delivery} setOrders={setOrders} schedule={order_info.schedule} />
                             {/* <button onClick={(e) => handleScheduleForm(e, order_info.order_id)}>schedule</button> */}
