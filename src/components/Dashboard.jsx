@@ -94,12 +94,12 @@ const Dashboard = () => {
   return (
     <>
       <div className='app-logo'>
-        <a href=""><img src="../../imgs/geg_logo_comm.png" alt="logo" id="logo" /></a>
+        <img src="../../imgs/geg_logo_comm.png" alt="logo" id="logo" />
         <h1>GEG Comm</h1>
         <button onClick={handleLogout}>Logout</button>
       </div>
       <h2>Scheduling</h2>
-      <div className='scheduling-container'>
+      <div className='orders-container'>
         {schedule_orders.length ? schedule_orders.map(order => {
           return <Order key={order.order_id+1000} orders={orders} setOrders={setOrders} order_info={order} setSchedule={setSchChange} />
         })

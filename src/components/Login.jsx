@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom'
 import { useState } from 'react';
 import loginService from '../services/login'
 import { useNavigate } from 'react-router-dom';
+import './Login.css'
 
 const Login = () => {
     const [username, setUsername] = useState('');
@@ -33,7 +34,7 @@ const Login = () => {
     }
 
     return (
-        <>
+        <div className='login-page'>
             <h1>Please Log in</h1>
 
             <form onSubmit={submitHandler}>
@@ -62,7 +63,7 @@ const Login = () => {
                     </label>
                 </div>
                 <div>
-                    <label>
+                    <label id="check">
                         <input
                             type="checkbox"
                             checked={showPassword}
@@ -73,7 +74,7 @@ const Login = () => {
                 </div>
                 <button type="submit">Login</button>
             </form>
-        </>
+        </div>
     )
 }
 

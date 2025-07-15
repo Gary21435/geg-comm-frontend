@@ -1,0 +1,39 @@
+.login-page {
+    display: flex;
+    flex-direction: column;
+    font-size: 1.6rem;
+}
+
+#check {
+    font-size: 1.3rem;
+}
+
+.login-page input[type="text"], input[type="password"] {
+    font-size: 1.1rem;
+
+    border-radius: 7px;
+    background-color: antiquewhite;
+    padding: 2px 2px;
+    width: 20rem;
+    border: 2px solid rgb(36, 65, 68);
+}
+
+.login-page>h1 {
+    font-size: 2.8rem;
+}
+
+.login-page button {
+    font-size: 1.3rem;
+    padding: 5px 10px;
+}
+
+.login-page p {
+    font-size: 1.2rem;
+}
+
+.login-page>form {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 3px;
+}

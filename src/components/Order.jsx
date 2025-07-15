@@ -92,7 +92,8 @@ const AssemblyForm = ({ values = {}, onChange }) => {
 
 const DeliveryScheduler = ({ id, delivery, setOrders, schedule }) => {
   const [scheduled, setScheduled] = useState(delivery);
-  const [dateSet, setDateSet] = useState(schedule)
+  const [dateSet, setDateSet] = useState(schedule);
+  
   let deliv = {
     date: null,
     time_from: null,
@@ -119,7 +120,18 @@ const DeliveryScheduler = ({ id, delivery, setOrders, schedule }) => {
             : order
         )
       );
-    }
+  }
+
+  // to update ui immediately
+  const changeDelivery = (date, time_from, time_to) => {
+      setOrders(prevOrders =>
+        prevOrders.map(order =>
+          order.id === id
+            ? { ...order, delivery: {date: date, time_from: time_from, time_to: time_to} }
+            : order
+        )
+      );
+  }
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -150,6 +162,8 @@ const DeliveryScheduler = ({ id, delivery, setOrders, schedule }) => {
     // to update ui
     changeSch(true);
     setDateSet(true);
+    changeDelivery(date, time_from, time_to);
+    // ***set<State>(order_info) in <Order /> so you don't have to update Dashboard's orders state
 
     orderService
       .updateOrder(id, {
@@ -161,6 +175,12 @@ const DeliveryScheduler = ({ id, delivery, setOrders, schedule }) => {
         console.log("schedule saved/updated.", r);
       })
       .catch(e => console.log("error:", e))
+
+    setTimeout(() => {
+      console.log("scheduled", scheduled);
+      console.log("delivery", delivery);
+    }, 1000);
+    
   };
 
   const handleRemove = () => {
@@ -176,6 +196,7 @@ const DeliveryScheduler = ({ id, delivery, setOrders, schedule }) => {
   }
 
   if (dateSet) {
+
     return (
       <div className='scheduled-info'>
         <h3>Delivery Scheduled</h3>
@@ -323,6 +344,9 @@ const Order = ({ order_info, orders, setOrders }) => {
                 <div className="order" onClick={() => expand(order_info.order_id)}><span>#{order_info.order_id}</span> <span>{order_info.first_name} {order_info.last_name}</span> <span className='order-status'>{order_info.custom_status}</span></div>
                 <div className='wrapper'>
                     <div className='table-div' id={String("order"+order_info.order_id)}>
+                        <div className='order-info'>
+                          {order_info.first_name}
+                        </div>
                         <table className='info-table'>
                             <tbody>
                                 {Object.keys(order_info).map((thing, i) => {
