@@ -310,12 +310,64 @@ const DeliveryScheduler = ({ id, delivery, setOrders, schedule }) => {
 const Order = ({ order_info, orders, setOrders }) => {
     const [folastExpired, setFolastExpired] = useState(false);
     const [folast, setFolast] = useState(null);
+    const [orderInfo, setOrderInfo] = useState(order_info);
     const date = new Date(); // Get the current date and time
+
+    const status_color = {
+      'New': '#007bff',
+      'Confirmed': '#17a2b8',
+      'Date Set': '#6f42c1',
+      'Scheduled': '#ffc107',
+      'Delivered': '#28a745',
+      'Cancelled': '#f65a45ff',
+      'Return': '#fd7e14',
+      'Replaced': '#20c997',
+      'Part Replaced': '#6610f2'
+    }
+
+    const statusStyleMap = {
+      New: { backgroundColor: '#3d8fe7ff', color: 'antiquewhite' },
+      Confirmed: { backgroundColor: '#17a2b8', color: 'antiquewhite' },
+      'Date Set': { backgroundColor: '#8258d0ff', color: 'antiquewhite' },
+      Scheduled: { backgroundColor: '#ffc107', color: 'rgb(36, 65, 68)' },
+      Delivered: { backgroundColor: '#36a951ff', color: 'antiquewhite' },
+      Cancelled: { backgroundColor: '#dc4a59ff', color: 'antiquewhite' },
+      Return: { backgroundColor: '#ff8928ff', color: 'rgb(36, 65, 68)' },
+      Replaced: { backgroundColor: '#51cda7ff', color: 'rgb(36, 65, 68)' },
+      'Part Replaced': { backgroundColor: '#51cda7ff', color: 'rgb(36, 65, 68)' },
+    };
+
+    const color = 'Replaced';
 
     const expand = (id) => {
         const table = document.querySelector(`#${"order"+id}.table-div`);
         table.classList.toggle('expand');
     }
+
+    Object.keys(order_info).map((thing, i) => {
+      if(thing !== "delivery") {
+        return <tr key={i}>
+            <td>{thing}: </td>
+            <td>{order_info[thing]}</td>
+        </tr>
+      } else return;
+    })
+
+    function formatUSPhone(phone) {
+      // Remove all non-digit characters
+      const cleaned = phone.replace(/\D/g, '');
+
+      if (cleaned.length === 10) {
+        return `(${cleaned.slice(0, 3)}) ${cleaned.slice(3, 6)}-${cleaned.slice(6)}`;
+      } else if (cleaned.length === 11 && cleaned.startsWith('1')) {
+        return `(${cleaned.slice(1, 4)}) ${cleaned.slice(4, 7)}-${cleaned.slice(7)}`;
+      } else {
+        return phone; // fallback
+      }
+    }
+
+    order_info.phone = formatUSPhone(order_info.phone);
+
 
     // to copy text (address, phone, etc.)
     // const copyToClipboard = (text) => {
@@ -341,44 +393,28 @@ const Order = ({ order_info, orders, setOrders }) => {
     return (
         <>
             <div className='order-container'>
-                <div className="order" onClick={() => expand(order_info.order_id)}><span>#{order_info.order_id}</span> <span>{order_info.first_name} {order_info.last_name}</span> <span className='order-status'>{order_info.custom_status}</span></div>
+                <div className="order" onClick={() => expand(order_info.order_id)}><span>#{order_info.order_id}</span> <span>{order_info.first_name} {order_info.last_name}</span>
+                <span>4 divani casa</span>
+                <span style={{...statusStyleMap[order_info.custom_status]}} className='order-status'>{order_info.custom_status}</span></div>
                 <div className='wrapper'>
                     <div className='table-div' id={String("order"+order_info.order_id)}>
                         <div className='order-info'>
-                          {order_info.first_name}
+                          <div className='personal'>
+                            {order_info.first_name + " " + order_info.last_name} <br />
+                            {order_info.street_1 + order_info.street_2 + ","} <br />
+                            {order_info.city + ", " + order_info.state + " " + order_info.zip} <br />
+                            {order_info.phone}
+                          </div>
+                          
                         </div>
-                        <table className='info-table'>
-                            <tbody>
-                                {Object.keys(order_info).map((thing, i) => {
-                                    if(thing !== "delivery") {
-                                      return <tr key={i}>
-                                          <td>{thing}: </td>
-                                          <td>{order_info[thing]}</td>
-                                      </tr>
-                                    } else return;
-                                  }
+                        <div className='fo-last'>
+                            folast:
+                              {folast ? (
+                                  folast
+                                ) : (
+                                  <button onClick={getFolast}>get folast</button>
                                 )}
-                                {
-                                  <tr>
-                                    <td>folast: </td>
-                                    <td>
-                                      {folast ? (
-                                          folast
-                                        ) : (
-                                          <button onClick={getFolast}>get folast</button>
-                                        )}
-                                      </td>
-                                  </tr>
-                                }
-                                {/* {order_info.delivery && Object.keys(order_info.delivery).map((thing, i) => {
-                                  return <tr key={i}>
-                                              <td>{thing}: </td>
-                                              <td>{order_info.thing}</td>
-                                          </tr>
-                                        }
-                                )} */}
-                            </tbody>
-                        </table>
+                          </div>
                         <div className='assembly-form-container'>
                             <AssemblyForm />
                         </div>

@@ -20,9 +20,15 @@
 
     display: flex;
     align-items: center;
+    justify-content: space-between;
     gap: 3px;
 
     font-size: 1.1rem;
+}
+
+.order>span {
+    overflow: hidden;
+    text-wrap: nowrap;
 }
 
 /* .order:hover {
@@ -31,7 +37,8 @@
 
 .order-status {
     background-color: rgb(220, 231, 120);
-    padding: 2px 4px;
+    padding: 2px 5px;
+    border-radius: 3px;
 
     margin-left: auto;
 }
@@ -71,5 +78,10 @@ form {
 td {
     padding-right: 10px;
     overflow: hidden;
+}
+
+.personal {
+    margin-bottom: 10px;
+    /* line-height: normal; */
 }
 
