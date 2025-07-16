@@ -26,6 +26,10 @@
     font-size: 1.1rem;
 }
 
+.quantity {
+    color: rgb(236, 58, 45);
+}
+
 .order>span {
     overflow: hidden;
     text-wrap: nowrap;

@@ -89,7 +89,9 @@ const Dashboard = () => {
   //   }, 100);
     
   // }, [])
-  
+  setTimeout(() => {
+    console.log('orders', orders);
+  }, 100);
 
   return (
     <>

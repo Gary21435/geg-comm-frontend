@@ -405,7 +405,17 @@ const Order = ({ order_info, orders, setOrders }) => {
                             {order_info.city + ", " + order_info.state + " " + order_info.zip} <br />
                             {order_info.phone}
                           </div>
-                          
+                          <div className='product-info'>
+                            {Array.isArray(order_info.product_data) && order_info.product_data.map((item, idx) => {
+                              item.name = item.name.replace(` / ${item.sku}`, ''); 
+                              return (
+                              <div key={idx} style={{ marginBottom: '.5em', width: '400px' }}>
+                                <span className='quantity'>{item.quantity + "x "}</span> {item.name} <br />
+                                {"SKU: " + item.sku} <br />
+                                {"Total: $" + item.total_inc_tax}
+                              </div>
+                            )})}
+                          </div>
                         </div>
                         <div className='fo-last'>
                             folast:
