@@ -22,6 +22,9 @@
     align-items: center;
     justify-content: space-between;
     gap: 3px;
+/* 
+    display: grid;
+    grid-template: 1fr / 1fr minmax(0, 3fr) .5fr minmax(0, 3fr) 2fr; */
 
     font-size: 1.1rem;
 }
@@ -43,8 +46,13 @@
     background-color: rgb(220, 231, 120);
     padding: 2px 5px;
     border-radius: 3px;
-
+    min-width: max-content;
     margin-left: auto;
+}
+
+.order-id {
+    color: #6d830c;
+    min-width: max-content;
 }
 
 .info-table {
@@ -89,3 +97,26 @@ td {
     /* line-height: normal; */
 }
 
+select, input[type='date'] {
+  border-radius: 6px;
+  border: none;
+  background-color: #e3af84;
+  color: #333;
+  padding: 0px 3px;
+}
+
+select:visited {
+    border: none;
+}
+
+input[type='radio'] {
+    border: 3px solid black;
+    background-color: #a0a978;
+    cursor: pointer;
+}
+
+.item-count {
+    background-color: rgb(238, 135, 39);
+    color: antiquewhite;
+    padding: 0px 2px;
+}

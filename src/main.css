@@ -42,8 +42,11 @@ p {
 }
 
 .app-logo {
+    width: 95%;
+
     display: flex;
     align-items: center;
+    justify-content: space-between;
 }
 
 .whole-app {
@@ -55,6 +58,7 @@ p {
     width: max-content;
     max-width: 100vw;
     margin-bottom: 20px;
+    margin-top: 10px;
 }
 
 form, .scheduled-info, .fo-last {
@@ -81,7 +85,7 @@ form, .scheduled-info, .fo-last {
 
 .orders-container {
     margin: 5px 0px;
-    width: 100%;
+    max-width: 100%;
     display: flex;
     flex-direction: column;
     align-items: center;

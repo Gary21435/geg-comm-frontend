@@ -36,56 +36,117 @@ const formatDateLong = (dateStr) => {
   });
 };
 
-const AssemblyForm = ({ values = {}, onChange }) => {
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    if (onChange) {
-      onChange({ ...values, [name]: value === 'yes' });
-    }
-  };
+const AssemblyForm = ({ id, assembly_info, setOrders }) => {
 
+  let assem = {
+    assembly: null,
+    elevator: null,
+    stairs: null,
+    fee: null
+  };
+  if(assembly_info) {
+    assem.assembly = assembly_info.assembly;
+    assem.elevator = assembly_info.elevator;
+    assem.stairs = assembly_info.stairs;
+    assem.fee = assembly_info.fee;
+  }
+  const [formData, setFormData] = useState({
+    assembly: assem.assembly || '',
+    elevator: assem.elevator || '',
+    stairs: assem.stairs || '',
+    fee: assem.fee || ''
+  });
+
+  const [formState, setFormState] = useState(() => {
+    if(!assembly_info)
+      return 0;
+    else {
+      if(assembly_info.assembly && !assembly_info.fee)
+        return 1;
+      else if(assembly_info.assembly && assembly_info.fee)
+        return 2;
+    }
+  });
+
+  const onSubmit = (e) => {
+    e.preventDefault();
+    const data = new FormData(e.target);
+
+    let assembly, elevator, stairs, fee;
+    if(formState === 0) {
+      assembly = data.get("assembly");
+      elevator = data.get("elevator");
+      stairs = data.get("stairs");
+      setFormData(curr => ({...curr, assembly, elevator, stairs}));
+
+      setFormState(1);
+    }
+    else if(formState === 1) {
+      fee = data.get("fee");
+      setFormData(curr => ({...curr, fee}));
+
+      setFormState(2);
+    }
+    else {
+    }
+  }
+
+  
   return (
-    <form onSubmit={(e) => {e.preventDefault()}}>
-      <div>
-        <label>
-          Assembly:
-          <select
-            name="assembly"
-            value={values.assembly ? 'yes' : 'no'}
-            onChange={handleChange}
-          >
-            <option value="yes">Yes</option>
-            <option value="no">No</option>
-          </select>
-        </label>
-      </div>
-      <div>
-        <label>
-          Elevator:
-          <select
-            name="elevator"
-            value={values.elevator ? 'yes' : 'no'}
-            onChange={handleChange}
-          >
-            <option value="yes">Yes</option>
-            <option value="no">No</option>
-          </select>
-        </label>
-      </div>
-      <div>
-        <label>
-          Stairs:
+    <form onSubmit={(e) => onSubmit(e)}>
+      {formState === 0 ?
+      (
+        <div>
           <div>
-            <input type="checkbox" id="Yes" name="Yes" />
-            <label htmlFor="Yes">Yes</label>
+            Assembly: <input type="radio" id="assembly-yes" name="assembly" value="yes" />
+            <label htmlFor="assembly-yes">Yes </label>
+
+            <input type="radio" id="assembly-no" name="assembly" value="no" />
+            <label htmlFor="assembly-no">No</label>
           </div>
+
           <div>
-            <input type="checkbox" id="scales" name="scales" />
-            <label htmlFor="scales">No</label>
+            Elevator: <input type="radio" id="elevator-yes" name="elevator" value="yes" />
+            <label htmlFor="elevator-yes">Yes </label>
+
+            <input type="radio" id="elevator-no" name="elevator" value="no" />
+            <label htmlFor="elevator-no">No</label>
           </div>
-        </label>
-      </div>
-      <button type="submit">Confirm Info</button>
+
+          <div>
+            Stairs: <input type="radio" id="stairs-yes" name="stairs" value="yes" />
+            <label htmlFor="stairs-yes">Yes </label>
+
+            <input type="radio" id="stairs-no" name="stairs" value="no" />
+            <label htmlFor="stairs-no">No</label>
+          </div>
+        </div>
+      ) : null}
+      {formState === 1 ? 
+      <div>
+            <div>
+              {"Assembly: " + formData.assembly} <br />
+              {"Elevator: " + formData.elevator}<br />
+              {"Stairs: " + formData.stairs}<br />
+            </div>
+            <div>
+              Fee: <input type="text" id="fee" name="fee" />
+            </div>
+          </div>
+        : null}
+      {formState === 2 ?
+        <div>
+          {"Assembly: " + formData.assembly} <br />
+          {"Elevator: " + formData.elevator}<br />
+          {"Stairs: " + formData.stairs}<br />
+          {"Fee: " + formData.fee}<br />
+        </div> 
+        : null
+      }
+      {formState < 2 ?
+        <button type="submit">Confirm Info</button> :
+        <button type='button'>Edit</button>
+      }
     </form>
   );
 };
@@ -211,8 +272,7 @@ const DeliveryScheduler = ({ id, delivery, setOrders, schedule }) => {
   return (
     <form onSubmit={handleSubmit}>
       <label>
-        Date:
-        <input
+        Date: <input
           type="date"
           name="date"
           value={formData.date}
@@ -223,8 +283,7 @@ const DeliveryScheduler = ({ id, delivery, setOrders, schedule }) => {
       <br />
 
       <label>
-        Time From:
-        <select
+        Time From: <select
           name="time_from"
           value={formData.time_from}
           onChange={handleChange}
@@ -241,8 +300,7 @@ const DeliveryScheduler = ({ id, delivery, setOrders, schedule }) => {
       <br />
 
       <label>
-        Time To:
-        <select
+        Time To: <select
           name="time_to"
           value={formData.time_to}
           onChange={handleChange}
@@ -337,7 +395,7 @@ const Order = ({ order_info, orders, setOrders }) => {
       'Part Replaced': { backgroundColor: '#51cda7ff', color: 'rgb(36, 65, 68)' },
     };
 
-    const color = 'Replaced';
+    const color = 'Part Replaced';
 
     const expand = (id) => {
         const table = document.querySelector(`#${"order"+id}.table-div`);
@@ -389,12 +447,23 @@ const Order = ({ order_info, orders, setOrders }) => {
         .catch(error => console.log("folast:",error));
     }
 
+    const furnitureTypes = ['Dining Table', 'Coffee Table', 'Queen Bed', 'Chair', 'Nightstand'];
+    
+    furnitureTypes.forEach(type => {
+      if (order_info.product_data[0].name.includes(type))
+        order_info.display = type;
+    });
+    // const chooseItemToDisplay = () => {
+    //   const items = 
+    // }
+
 
     return (
         <>
             <div className='order-container'>
-                <div className="order" onClick={() => expand(order_info.order_id)}><span>#{order_info.order_id}</span> <span>{order_info.first_name} {order_info.last_name}</span>
-                <span>4 divani casa</span>
+                <div className="order" onClick={() => expand(order_info.order_id)}><span className='order-id'>#{order_info.order_id}</span> <span>{order_info.first_name} {order_info.last_name}</span>
+                <div><span className='item-count'>{order_info.items_total}</span></div>
+                <span>{order_info.display}</span>
                 <span style={{...statusStyleMap[order_info.custom_status]}} className='order-status'>{order_info.custom_status}</span></div>
                 <div className='wrapper'>
                     <div className='table-div' id={String("order"+order_info.order_id)}>
@@ -408,25 +477,26 @@ const Order = ({ order_info, orders, setOrders }) => {
                           <div className='product-info'>
                             {Array.isArray(order_info.product_data) && order_info.product_data.map((item, idx) => {
                               item.name = item.name.replace(` / ${item.sku}`, ''); 
+                              item.total_inc_tax = item.total_inc_tax.slice(0, -1);
+                              let url = `https://gegcomfort.com${item.product_url}`
                               return (
                               <div key={idx} style={{ marginBottom: '.5em', width: '400px' }}>
                                 <span className='quantity'>{item.quantity + "x "}</span> {item.name} <br />
-                                {"SKU: " + item.sku} <br />
+                                SKU: <a href={url} target="_blank">{item.sku}</a> <br />
                                 {"Total: $" + item.total_inc_tax}
                               </div>
                             )})}
                           </div>
                         </div>
                         <div className='fo-last'>
-                            folast:
-                              {folast ? (
+                            folast: {folast ? (
                                   folast
                                 ) : (
                                   <button onClick={getFolast}>get folast</button>
                                 )}
                           </div>
                         <div className='assembly-form-container'>
-                            <AssemblyForm />
+                            <AssemblyForm id={order_info.id} assembly_info={order_info.assembly_info} setOrders={setOrders} />
                         </div>
                         <div className='schedule-form-container'>
                             <DeliveryScheduler id={order_info.id} delivery={order_info.delivery} setOrders={setOrders} schedule={order_info.schedule} />
