@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import './Order.css'
 import orderService from '../services/orders'
+import orders from '../services/orders';
 
 // Generate time options in 24-hour format for the form
 const generateTimeOptions = () => {
@@ -390,6 +391,77 @@ const DeliveryScheduler = ({ id, delivery, setOrders, schedule }) => {
   );
 };
 
+const StatusPicker = ({ id, custom_status, setOrders }) => {
+  const [status, setStatus] = useState(custom_status);
+
+  const onChange = (newStatus) => {
+    console.log("status changed?", newStatus);
+
+    orderService
+      .changeStatus(id, newStatus)
+      .then(r => console.log("status changed."))
+      .catch(err => console.log("status change error:", err))
+  }
+
+  return (
+    <>
+      <label htmlFor="colors">Status: </label>
+      <select
+        id="colors"
+        name="colors"
+        value={status}
+        onChange={e => {
+          setStatus(e.target.value);
+          onChange(e.target.value);
+          // Optionally update order status in parent here
+          setOrders(prev =>
+            prev.map(order =>
+              order.id === id ? { ...order, custom_status: e.target.value } : order
+            )
+          );
+        }}
+        style={{
+          backgroundColor: {
+            New: '#007bff',
+            Confirmed: '#17a2b8',
+            DateSet: '#6f42c1',
+            'Date Set': '#6f42c1',
+            Scheduled: '#ffc107',
+            Delivered: '#28a745',
+            Cancelled: '#f65a45ff',
+            Return: '#fd7e14',
+            Replaced: '#20c997',
+            'Part Replaced': '#51cda7ff'
+          }[status] || '#fff',
+          color: '#fff'
+        }}
+      >
+        {[
+          { value: 'New', label: 'New', color: '#007bff' },
+          { value: 'Confirmed', label: 'Confirmed', color: '#17a2b8' },
+          { value: 'Date Set', label: 'Date Set', color: '#6f42c1' },
+          { value: 'Scheduled', label: 'Scheduled', color: '#ffc107' },
+          { value: 'Delivered', label: 'Delivered', color: '#28a745' },
+          { value: 'Cancelled', label: 'Cancelled', color: '#f65a45ff' },
+          { value: 'Return', label: 'Return', color: '#fd7e14' },
+          { value: 'Replaced', label: 'Replaced', color: '#20c997' },
+          { value: 'Part Replaced', label: 'Part Replaced', color: '#51cda7ff' }
+        ].map(opt => (
+          <option
+            key={opt.value}
+            value={opt.value}
+            style={{
+              backgroundColor: opt.color,
+              color: '#fff'
+            }}
+          >
+            {opt.label}
+          </option>
+        ))}
+      </select>
+    </>
+  )
+}
 
 // const CustomTimeInput15Min = () => {
 //   const [hour, setHour] = useState('09');
@@ -456,12 +528,12 @@ const Order = ({ order_info, orders, setOrders }) => {
       New: { backgroundColor: '#3d8fe7ff', color: 'antiquewhite' },
       Confirmed: { backgroundColor: '#17a2b8', color: 'antiquewhite' },
       'Date Set': { backgroundColor: '#8258d0ff', color: 'antiquewhite' },
-      Scheduled: { backgroundColor: '#ffc107', color: 'rgb(36, 65, 68)' },
+      Scheduled: { backgroundColor: '#ffc107', color: 'antiquewhite' },
       Delivered: { backgroundColor: '#36a951ff', color: 'antiquewhite' },
       Cancelled: { backgroundColor: '#dc4a59ff', color: 'antiquewhite' },
-      Return: { backgroundColor: '#ff8928ff', color: 'rgb(36, 65, 68)' },
-      Replaced: { backgroundColor: '#51cda7ff', color: 'rgb(36, 65, 68)' },
-      'Part Replaced': { backgroundColor: '#51cda7ff', color: 'rgb(36, 65, 68)' },
+      Return: { backgroundColor: '#ff8928ff', color: 'antiquewhite' },
+      Replaced: { backgroundColor: '#51cda7ff', color: 'antiquewhite' },
+      'Part Replaced': { backgroundColor: '#51cda7ff', color: 'antiquewhite' },
     };
 
     const color = 'Part Replaced';
@@ -558,6 +630,7 @@ const Order = ({ order_info, orders, setOrders }) => {
                           </div>
                         </div>
                         <div className='fo-last'>
+                            <StatusPicker id={order_info.id} custom_status={order_info.custom_status} setOrders={setOrders} /> <br />
                             folast: {folast ? (
                                   folast
                                 ) : (

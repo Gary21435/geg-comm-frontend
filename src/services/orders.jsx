@@ -27,6 +27,12 @@ const updateAssembly = (id, assemblyData) => {
     })
 }
 
+const changeStatus = (id, newStatus) => {
+    return axios.patch(`${baseUrl}/status/${id}/${newStatus}`, {
+        withCredentials: true
+    })
+}
+
 const setSchFalse = (id) => {
     return axios.patch(`${baseUrl}/schedule/${id}/false`, {
         withCredentials: true
@@ -42,4 +48,4 @@ const getFolast = (id) => {
     })
 }
 
-export default { getAll, updateOrder, updateAssembly, setSchFalse, getFolast }
+export default { getAll, updateOrder, updateAssembly, changeStatus, setSchFalse, getFolast }

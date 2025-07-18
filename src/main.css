@@ -77,6 +77,13 @@ form, .scheduled-info, .fo-last {
     margin-bottom: 2px;
 }
 
+.fo-last {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 3px;
+}
+
 .scheduling-container {
     margin-top: 5px;
     width: 96%;
