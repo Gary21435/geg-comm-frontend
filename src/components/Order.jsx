@@ -109,13 +109,14 @@ const AssemblyForm = ({ id, assembly_info, setOrders }) => {
       //   fee: ''
       // })
     }
-
-    // orderService
-    //   .updateAssembly(id, formData)
-    //   .then(r => {
-    //     console.log("schedule saved/updated.", r);
-    //   })
-    //   .catch(e => console.log("error:", e))
+    if(formState !== 2) {
+      orderService
+        .updateAssembly(id, formData)
+        .then(r => {
+          console.log("schedule saved/updated.", r);
+        })
+        .catch(e => console.log("error:", e))
+    }
   }
 
 
@@ -165,9 +166,9 @@ const AssemblyForm = ({ id, assembly_info, setOrders }) => {
       return (
         <div>
           <div>
-            {"Assembly: " + formData.assembly} <br />
-            {"Elevator: " + formData.elevator}<br />
-            {"Stairs: " + formData.stairs}<br />
+            {"Assembly: "} <strong>{formData.assembly}</strong> <br />
+            {"Elevator: "} <strong>{formData.elevator}</strong><br />
+            {"Stairs: "} <strong>{formData.stairs}</strong><br />
           </div>
           <div>
             Fee: <input
@@ -190,7 +191,7 @@ const AssemblyForm = ({ id, assembly_info, setOrders }) => {
       console.log(3);
       return (
         <div>
-          {"Assembly: " + formData.assembly} <br />
+          {"Assembly: "} <strong>{formData.assembly}</strong> <br />
           <button type="submit" >Edit</button>
         </div>
       )
@@ -200,10 +201,10 @@ const AssemblyForm = ({ id, assembly_info, setOrders }) => {
       return (
         <div>
           <div>
-            {"Assembly: " + formData.assembly} <br />
-            {"Elevator: " + formData.elevator}<br />
-            {"Stairs: " + formData.stairs}<br />
-            {"Fee: " + formData.fee}<br />
+            {"Assembly: "} <strong>{formData.assembly}</strong> <br />
+            {"Elevator: "} <strong>{formData.elevator}</strong><br />
+            {"Stairs: "} <strong>{formData.stairs}</strong><br />
+            {"Fee: "} <strong>{formData.fee}</strong><br />
           </div>
           <button type="submit" >Edit</button>
         </div>
@@ -241,15 +242,15 @@ const DeliveryScheduler = ({ id, delivery, setOrders, schedule }) => {
 
   const timeOptions = generateTimeOptions();
 
-  // const changeSch = (bool) => {
-  //     setOrders(prevOrders =>
-  //       prevOrders.map(order =>
-  //         order.id === id
-  //           ? { ...order, schedule: bool }
-  //           : order
-  //       )
-  //     );
-  // }
+  const changeSch = (bool) => {
+      setOrders(prevOrders =>
+        prevOrders.map(order =>
+          order.id === id
+            ? { ...order, schedule: bool }
+            : order
+        )
+      );
+  }
 
   // to update ui immediately
   const changeDelivery = (date, time_from, time_to) => {
@@ -289,7 +290,7 @@ const DeliveryScheduler = ({ id, delivery, setOrders, schedule }) => {
       time_to: formatTime12hr(time_to),
     });
     // to update ui
-    //changeSch(true);
+    changeSch(true);
     setDateSet(true);
     changeDelivery(date, time_from, time_to);
     // ***set<State>(order_info) in <Order /> so you don't have to update Dashboard's orders state
