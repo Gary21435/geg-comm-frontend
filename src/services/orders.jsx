@@ -18,6 +18,15 @@ const updateOrder = (id, scheduleData) => {
     })
 }
 
+const updateAssembly = (id, assemblyData) => {
+    return axios.patch(`${baseUrl}/assemble/${id}`, assemblyData, {
+        headers: {
+            "Content-Type": 'application/json'
+        },
+        withCredentials: true
+    })
+}
+
 const setSchFalse = (id) => {
     return axios.patch(`${baseUrl}/schedule/${id}/false`, {
         withCredentials: true
@@ -33,4 +42,4 @@ const getFolast = (id) => {
     })
 }
 
-export default { getAll, updateOrder, setSchFalse, getFolast }
+export default { getAll, updateOrder, updateAssembly, setSchFalse, getFolast }

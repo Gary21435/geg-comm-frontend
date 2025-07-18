@@ -42,7 +42,7 @@ const AssemblyForm = ({ id, assembly_info, setOrders }) => {
     assembly: null,
     elevator: null,
     stairs: null,
-    fee: null
+    fee: ''
   };
   if(assembly_info) {
     assem.assembly = assembly_info.assembly;
@@ -51,102 +51,170 @@ const AssemblyForm = ({ id, assembly_info, setOrders }) => {
     assem.fee = assembly_info.fee;
   }
   const [formData, setFormData] = useState({
-    assembly: assem.assembly || '',
-    elevator: assem.elevator || '',
-    stairs: assem.stairs || '',
+    assembly: assem.assembly || null,
+    elevator: assem.elevator || null,
+    stairs: assem.stairs || null,
     fee: assem.fee || ''
   });
 
   const [formState, setFormState] = useState(() => {
+    console.log("is this running every time?");
     if(!assembly_info)
       return 0;
+    else if (!assembly_info.assembly)
+      return 2;
     else {
-      if(assembly_info.assembly && !assembly_info.fee)
+      if(assembly_info.assembly && assembly_info.fee === '')
         return 1;
-      else if(assembly_info.assembly && assembly_info.fee)
+      else if(assembly_info.assembly && assembly_info.fee !== '')
         return 2;
     }
   });
+  console.log('formState:', formState);
 
   const onSubmit = (e) => {
     e.preventDefault();
     const data = new FormData(e.target);
 
     let assembly, elevator, stairs, fee;
-    if(formState === 0) {
-      assembly = data.get("assembly");
-      elevator = data.get("elevator");
-      stairs = data.get("stairs");
+    assembly = data.get("assembly");
+    elevator = data.get("elevator");
+    stairs = data.get("stairs");
+    fee = data.get("fee");
+    if(formState === 0 && assembly !== 'no') {
+      
+      console.log("onsubmit1");
       setFormData(curr => ({...curr, assembly, elevator, stairs}));
-
+      console.log("assembly::::", assembly);
       setFormState(1);
     }
-    else if(formState === 1) {
+    else if (assembly === 'no' && formState < 2) {
+      console.log("onsubmit2");
+      setFormData(curr => ({...curr, assembly}));
+      setFormState(2);
+    }
+    else if(fee !== '' && formState < 2) {
+      console.log("onsubmit3");
       fee = data.get("fee");
       setFormData(curr => ({...curr, fee}));
 
       setFormState(2);
     }
-    else {
+    else if (formState === 2) {
+      setFormState(0);
+      // setFormData({
+      //   assembly: null,
+      //   elevator: null,
+      //   stairs: null,
+      //   fee: ''
+      // })
     }
+
+    // orderService
+    //   .updateAssembly(id, formData)
+    //   .then(r => {
+    //     console.log("schedule saved/updated.", r);
+    //   })
+    //   .catch(e => console.log("error:", e))
   }
 
-  
-  return (
-    <form onSubmit={(e) => onSubmit(e)}>
-      {formState === 0 ?
-      (
+
+  console.log("aasdasdasd", formData.assembly);
+
+  const renderForm = () => {
+    if(formState === 0) {
+      console.log('1');
+      return (
         <div>
           <div>
-            Assembly: <input type="radio" id="assembly-yes" name="assembly" value="yes" />
+            Assembly: <input type="radio" checked={formData.assembly === 'yes'} id="assembly-yes" name="assembly" value="yes" 
+            onChange={(e) => setFormData(curr => ({...curr, assembly: e.target.value}))} />
             <label htmlFor="assembly-yes">Yes </label>
 
-            <input type="radio" id="assembly-no" name="assembly" value="no" />
+            <input type="radio" checked={formData.assembly === 'no'} id="assembly-no" name="assembly" value="no"
+            onChange={(e) => setFormData(curr => ({...curr, assembly: e.target.value}))} />
             <label htmlFor="assembly-no">No</label>
           </div>
 
           <div>
-            Elevator: <input type="radio" id="elevator-yes" name="elevator" value="yes" />
+            Elevator: <input type="radio" checked={formData.elevator === 'yes'} id="elevator-yes" name="elevator" value="yes"
+            onChange={(e) => setFormData(curr => ({...curr, elevator: e.target.value}))} />
             <label htmlFor="elevator-yes">Yes </label>
 
-            <input type="radio" id="elevator-no" name="elevator" value="no" />
+            <input type="radio" checked={formData.elevator === 'no'} id="elevator-no" name="elevator" value="no"
+            onChange={(e) => setFormData(curr => ({...curr, elevator: e.target.value}))} />
             <label htmlFor="elevator-no">No</label>
           </div>
 
           <div>
-            Stairs: <input type="radio" id="stairs-yes" name="stairs" value="yes" />
+            Stairs: <input type="radio" checked={formData.stairs === 'yes'} id="stairs-yes" name="stairs" value="yes"
+            onChange={(e) => setFormData(curr => ({...curr, stairs: e.target.value}))} />
             <label htmlFor="stairs-yes">Yes </label>
 
-            <input type="radio" id="stairs-no" name="stairs" value="no" />
+            <input type="radio" checked={formData.stairs === 'no'} id="stairs-no" name="stairs" value="no"
+            onChange={(e) => setFormData(curr => ({...curr, stairs: e.target.value}))} />
             <label htmlFor="stairs-no">No</label>
           </div>
+
+          <button type="submit">Confirm Info</button>
         </div>
-      ) : null}
-      {formState === 1 ? 
-      <div>
-            <div>
-              {"Assembly: " + formData.assembly} <br />
-              {"Elevator: " + formData.elevator}<br />
-              {"Stairs: " + formData.stairs}<br />
-            </div>
-            <div>
-              Fee: <input type="text" id="fee" name="fee" />
-            </div>
+      ) 
+    }
+    else if (formData.assembly === 'yes' && formState === 1) {
+      console.log(2);
+      return (
+        <div>
+          <div>
+            {"Assembly: " + formData.assembly} <br />
+            {"Elevator: " + formData.elevator}<br />
+            {"Stairs: " + formData.stairs}<br />
           </div>
-        : null}
-      {formState === 2 ?
+          <div>
+            Fee: <input
+                    type="text"
+                    id="fee"
+                    name="fee"
+                    value={formData.fee || ''} // ensures controlled input
+                    onChange={(e) =>
+                      setFormData((prev) => ({
+                        ...prev,
+                        fee: e.target.value
+                      }))
+                    }
+                  />
+          </div>
+          <button type="submit">Confirm Info</button>
+        </div>)
+    }
+    else if (formData.assembly === 'no' && formState === 2) {
+      console.log(3);
+      return (
         <div>
           {"Assembly: " + formData.assembly} <br />
-          {"Elevator: " + formData.elevator}<br />
-          {"Stairs: " + formData.stairs}<br />
-          {"Fee: " + formData.fee}<br />
-        </div> 
-        : null
-      }
-      {formState < 2 ?
-        <button type="submit">Confirm Info</button> :
-        <button type='button'>Edit</button>
-      }
+          <button type="submit" >Edit</button>
+        </div>
+      )
+    }
+    else if (formState === 2 && formData.assembly === 'yes') {
+      console.log(4);
+      return (
+        <div>
+          <div>
+            {"Assembly: " + formData.assembly} <br />
+            {"Elevator: " + formData.elevator}<br />
+            {"Stairs: " + formData.stairs}<br />
+            {"Fee: " + formData.fee}<br />
+          </div>
+          <button type="submit" >Edit</button>
+        </div>
+      )
+    }
+
+  }
+
+  return (
+    <form onSubmit={(e) => onSubmit(e)}>
+      {renderForm()}
     </form>
   );
 };
@@ -173,22 +241,22 @@ const DeliveryScheduler = ({ id, delivery, setOrders, schedule }) => {
 
   const timeOptions = generateTimeOptions();
 
-  const changeSch = (bool) => {
-      setOrders(prevOrders =>
-        prevOrders.map(order =>
-          order.id === id
-            ? { ...order, schedule: bool }
-            : order
-        )
-      );
-  }
+  // const changeSch = (bool) => {
+  //     setOrders(prevOrders =>
+  //       prevOrders.map(order =>
+  //         order.id === id
+  //           ? { ...order, schedule: bool }
+  //           : order
+  //       )
+  //     );
+  // }
 
   // to update ui immediately
   const changeDelivery = (date, time_from, time_to) => {
       setOrders(prevOrders =>
         prevOrders.map(order =>
           order.id === id
-            ? { ...order, delivery: {date: date, time_from: time_from, time_to: time_to} }
+            ? { ...order, schedule: true, delivery: {date: date, time_from: time_from, time_to: time_to} }
             : order
         )
       );
@@ -221,7 +289,7 @@ const DeliveryScheduler = ({ id, delivery, setOrders, schedule }) => {
       time_to: formatTime12hr(time_to),
     });
     // to update ui
-    changeSch(true);
+    //changeSch(true);
     setDateSet(true);
     changeDelivery(date, time_from, time_to);
     // ***set<State>(order_info) in <Order /> so you don't have to update Dashboard's orders state
